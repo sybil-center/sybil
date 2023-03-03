@@ -1,0 +1,15 @@
+{
+  "name": "@sybil-center/monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Monorepo for @sybil-center",
+  "scripts": {
+    "build": "pnpm run -r build"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.4",
+    "tsm": "^2.3.0",
+    "typescript": "^4.9.5",
+    "uvu": "^0.5.6"
+  }
+}
