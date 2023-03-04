@@ -13,11 +13,12 @@ export class GithubClient implements IClient<GitHubAccOwnershipVC> {
 
   async issueCredential(signFn: SignFn): Promise<GitHubAccOwnershipVC> {
     const payload = await this.provider.getPayload({ redirectUrl: this.httpClient.popupEndpoint.href });
-    window.open(
+    const popup = window.open(
       payload.authUrl,
-      payload.authUrl,
+      "_blank",
       "popup, width=700, height=700, left=620, top=500, status=yes, location=yes"
     );
+    if (!popup) throw new Error(`Can not open popup window to authenticate in GitHub`);
     await repeatUntil<boolean>(
       (r) => r,
       1000,
