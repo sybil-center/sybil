@@ -1,34 +1,35 @@
 import type { IClient } from "./client.type.js";
 import {
-  type ITwitterAccountOwnershipVC,
-  TwitterAccOwnershipProvider,
-  TwitterOwnershipOptions
-} from "../providers/twitter-acc-ownership.provider.js";
-import type { HttpClient } from "../util/http-client.js";
+  DiscordAccOwnershipProvider,
+  DiscordAccOwnVC,
+  DiscordOwnershipOptions
+} from "../providers/discord-acc-ownership.provider.js";
+import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../util/sign-fn.type.js";
-import { repeatUntil } from "../util/repeat-until.js";
 import { popupFeatures } from "../util/view.js";
+import { repeatUntil } from "../util/repeat-until.js";
 
-export class TwitterAccountClient implements IClient<ITwitterAccountOwnershipVC, TwitterOwnershipOptions> {
+export class DiscordAccountClient
+  implements IClient<DiscordAccOwnVC, DiscordOwnershipOptions> {
 
   constructor(
     httpClient: HttpClient,
-    private readonly provider = new TwitterAccOwnershipProvider(httpClient)
+    private readonly provider = new DiscordAccOwnershipProvider(httpClient)
   ) {}
 
   async issueCredential(
     signFn: SignFn,
-    opt?: TwitterOwnershipOptions
-  ): Promise<ITwitterAccountOwnershipVC> {
+    opt?: DiscordOwnershipOptions
+  ): Promise<DiscordAccOwnVC> {
     const payload = await this.provider.getPayload({
       redirectUrl: opt?.redirectUrl
     });
     const popup = window.open(
       payload.authUrl,
       "_blank",
-      opt?.windowFeatures ? opt?.windowFeatures : popupFeatures()
+      opt?.windowFeature ? opt?.windowFeature : popupFeatures()
     );
-    if (!popup) throw new Error(`Can not open popup window to authenticate in Twitter`);
+    if (!popup) throw new Error(`Can not open popup window to authenticate in Discord`);
     await repeatUntil<boolean>(
       (r) => r,
       1000,

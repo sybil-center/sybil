@@ -1,6 +1,6 @@
-import * as uint8arrays from "uint8arrays";
 import { ISigner } from "./signer.type.js";
-import { SignResult } from "../util/sign-fn.type.js";
+import type { SignResult } from "../util/sign-fn.type.js";
+import * as uint8arrays from "uint8arrays";
 
 export interface RequestArguments {
   readonly method: string;

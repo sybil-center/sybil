@@ -1,7 +1,8 @@
-import type { ICredentialProvider } from "./credential-provider.type.js";
-import type { SignFn } from "../util/sign-fn.type.js";
-import type { HttpClient } from "../util/http-client.js";
 import type { IVC } from "../util/vc.type.js";
+import { ICredentialProvider } from "./credential-provider.type.js";
+import { HttpClient } from "../util/http-client.js";
+import type { SignFn } from "../util/sign-fn.type.js";
+
 
 export interface EthAccOwnershipIssueVCPayload {
   messageId: string;
