@@ -1,5 +1,6 @@
 import * as uint8arrays from "uint8arrays";
 import { ISigner } from "./signer.type.js";
+import { SignResult } from "../util/sign-fn.type.js";
 
 export interface RequestArguments {
   readonly method: string;
@@ -16,36 +17,69 @@ export class EthRequestSigner implements ISigner {
     this.sign = this.sign.bind(this);
   }
 
-  async sign(args: { message: string }): Promise<`0x${string}`> {
+  async sign(args: { message: string }): Promise<SignResult> {
     const message = args.message;
-    const account = await this.getAccount();
+    const address = await this.getAccount();
     const hex = uint8arrays.toString(uint8arrays.fromString(message), "hex");
-    return this.provider
-      .request<`0x${string}`>({
-        method: "eth_sign",
-        params: [account, hex],
-      })
-      .catch((reason) => {
-        // MetaMask does not like eth_sign
-        if ("code" in reason && (reason.code === -32602 || reason.code === -32601)) {
-          return this.provider.request({
-            method: "personal_sign",
-            params: [account, hex],
-          });
-        } else {
-          throw reason;
-        }
-      });
+    const signature = await this.#signMessage(address, hex);
+    const chainId = await this.getChainId();
+    return {
+      address: address,
+      signature: signature,
+      chain: `did:pkh:eip155:${chainId}`
+    };
   }
 
   async getAccount(): Promise<string> {
-    const accounts = (await this.provider.request({
+    const accounts = (await this.provider.request<string[]>({
       method: "eth_accounts",
-    })) as string[];
+    }));
     const account = accounts[0];
     if (!account) {
       throw new Error(`Enable Ethereum provider`);
     }
     return account;
+  }
+
+  async getChainId(): Promise<number> {
+    return Number(
+      await this.provider.request<string>({
+        method: "net_version"
+      })
+    );
+  }
+
+  /**
+   * Return signature as base64 string
+   * @param address - ethereum 0x<address>
+   * @param hexMessage - message as hex string
+   */
+  async #signMessage(address: string, hexMessage: string): Promise<string> {
+    try {
+      return this.#normalizeSignature(
+        await this.provider.request<`0x${string}`>({
+          method: "eth_sign",
+          params: [address, hexMessage]
+        })
+      );
+    } catch (err) {
+      const reason = err as Error;
+      if ("code" in reason && (reason.code === -32602 || reason.code === -32601)) {
+        return this.#normalizeSignature(
+          await this.provider.request<`0x${string}`>({
+            method: "personal_sign",
+            params: [address, hexMessage],
+          })
+        );
+      }
+      throw reason;
+    }
+  }
+
+  #normalizeSignature(signature: string): string {
+    return uint8arrays.toString(
+      uint8arrays.fromString(signature.substring(2)),
+      "base64"
+    );
   }
 }
