@@ -6,7 +6,6 @@
     "resolveJsonModule": false,
     "declaration": true,
     "inlineSourceMap": true,
-    "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -26,7 +25,10 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "allowUnreachableCode": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "./src/",
+    "sourceRoot": "./src/",
+    "outDir": "./dist/"
   },
-  "exclude": ["./test"]
+  "exclude": ["./dist/", "./demo-app/"]
 }
