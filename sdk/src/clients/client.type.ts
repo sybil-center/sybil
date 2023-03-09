@@ -1,5 +1,5 @@
 import type { SignFn } from "../util/sign-fn.type.js";
 
-export interface IClient<TCredential> {
-  issueCredential(signFn: SignFn): Promise<TCredential>;
+export interface IClient<TCredential, TOptions> {
+  issueCredential(signFn: SignFn, options?: TOptions): Promise<TCredential>;
 }
