@@ -1,33 +1,33 @@
 import type { IClient } from "./clients/client.type.js";
 import { TwitterAccountClient } from "./clients/twitter-account.client.js";
 import type { SignFn } from "./util/sign-fn.type.js";
-import { type ITwitterAccountOwnershipVC, type TwitterOwnershipOptions } from "./providers/twitter-acc-ownership.provider.js";
-import { type DiscordAccOwnVC, type DiscordOwnershipOptions } from "./providers/discord-acc-ownership.provider.js";
 import { DiscordAccountClient } from "./clients/discord-account.client.js";
-import { type EthOwnershipOptions, type IEthAccountOwnershipVC } from "./providers/eth-acc-ownership.provider.js";
 import { EthAccountClient } from "./clients/eth-account.client.js";
-import { type GitHubOwnershipOptions, type GitHubAccOwnershipVC } from "./providers/github-acc-ownership.provider.js";
 import { GithubAccountClient } from "./clients/github-account.client.js";
 import { HttpClient } from "./util/http-client.js";
+import { TwitterAccount, TwitterAccountOptions } from "./types/twitter/account-credential.type.js";
+import { DiscordAccount, DiscordAccountOptions } from "./types/discord/account-credential.type.js";
+import { GitHubAccount, GitHubAccountOptions } from "./types/github/account-credential.type.js";
+import { EthAccount, EthAccountOptions } from "./types/ethereum/accoutn-credential.type.js";
 
-export { ITwitterAccountOwnershipVC, DiscordAccOwnVC, IEthAccountOwnershipVC, GitHubAccOwnershipVC };
+export { TwitterAccount, DiscordAccount, EthAccount, GitHubAccount };
 
 export type CredentialKinds = {
   "twitter-account": {
-    kind: ITwitterAccountOwnershipVC,
-    options: TwitterOwnershipOptions
+    kind: TwitterAccount,
+    options: TwitterAccountOptions
   };
   "discord-account": {
-    kind: DiscordAccOwnVC,
-    options: DiscordOwnershipOptions
+    kind: DiscordAccount,
+    options: DiscordAccountOptions
   };
   "ethereum-account": {
-    kind: IEthAccountOwnershipVC,
-    options: EthOwnershipOptions
+    kind: EthAccount,
+    options: EthAccountOptions
   };
   "github-account": {
-    kind: GitHubAccOwnershipVC,
-    options: GitHubOwnershipOptions
+    kind: GitHubAccount,
+    options: GitHubAccountOptions
   };
 };
 

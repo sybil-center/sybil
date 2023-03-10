@@ -1,50 +1,20 @@
-import { ChainAlias } from "../util/chain-aliase.type.js";
-import type { IVC } from "../util/vc.type.js";
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../util/sign-fn.type.js";
-
-
-export type ChallengeReq = {
-  redirectUrl?: string;
-};
-
-export type Challenge = {
-  authUrl: string;
-  sessionId: string;
-  signMessage: string;
-};
-
-export type IssueReq = {
-  sessionId: string;
-  signature: string;
-  chain?: ChainAlias;
-  address: string;
-};
-
-export interface CredentialReq {
-  sessionId: string;
-  signMessage: string;
-}
-
-export interface DiscordAccOwnVC extends IVC {
-  credentialSubject: {
-    id: string;
-    discord: {
-      id: string;
-      username: string;
-      discriminator: string;
-    };
-  };
-}
-
-export type DiscordOwnershipOptions = {
-  redirectUrl?: string;
-  windowFeature?: string;
-}
+import {
+  DiscordAccountChallenge as Challenge,
+  DiscordAccountChallengeReq as ChallengeReq,
+  DiscordAccount,
+  DiscordAccountReq, DiscordAccountIssueReq
+} from "../types/discord/account-credential.type.js";
 
 export class DiscordAccOwnershipProvider
-  implements ICredentialProvider<ChallengeReq, Challenge, CredentialReq, DiscordAccOwnVC>
+  implements ICredentialProvider<
+    ChallengeReq,
+    Challenge,
+    DiscordAccountReq,
+    DiscordAccount
+  >
 {
   readonly kind = "DiscordAccountOwnershipCredential";
 
@@ -58,13 +28,13 @@ export class DiscordAccOwnershipProvider
     return this.httpClient.canIssue(this.kind, sessionId);
   }
 
-  async issueVC(signAlg: SignFn, { signMessage, sessionId }: CredentialReq): Promise<DiscordAccOwnVC> {
+  async issueVC(signAlg: SignFn, { signMessage, sessionId }: DiscordAccountReq): Promise<DiscordAccount> {
     const {
       address,
       chain,
       signature
     } = await signAlg({ message: signMessage });
-    return this.httpClient.issue<DiscordAccOwnVC, IssueReq>(this.kind, {
+    return this.httpClient.issue<DiscordAccount, DiscordAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
       address: address,

@@ -1,57 +1,22 @@
-import { ChainAlias } from "../util/chain-aliase.type.js";
-import type { IVC } from "../util/vc.type.js";
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../util/sign-fn.type.js";
-
-
-export type GitHubAccOwnIssueParams = {
-  sessionId: string;
-  signMessage: string;
-};
-
-export type GitHubAccOwnPayloadRequest = {
-  redirectUrl?: string;
-};
-
-export type GitHubAccOwnPayload = {
-  authUrl: string;
-  sessionId: string;
-  signMessage: string;
-};
-
-export type GitHubAccOwnRequest = {
-  sessionId: string;
-  signature: string;
-  address: string;
-  chain?: ChainAlias;
-};
-
-export interface GitHubAccOwnershipVC extends IVC {
-  credentialSubject: {
-    id: string;
-    github: {
-      id: number;
-      username: string;
-      userPage: string;
-    };
-  };
-}
-
-export type GitHubOwnershipOptions = {
-  redirectUrl?: string,
-  windowFeature?: string
-}
+import {
+  GitHubAccount,
+  GitHubAccountChallenge as Challenge,
+  GitHubAccountChallengeReq as ChallengeReq,
+  GitHubAccountIssueReq,
+  GitHubAccountReq
+} from "../types/github/account-credential.type.js";
 
 export class GitHubAccOwnershipProvider
-  implements
-    ICredentialProvider<GitHubAccOwnPayloadRequest, GitHubAccOwnPayload, GitHubAccOwnIssueParams, GitHubAccOwnershipVC>
+  implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccount>
 {
   readonly kind = "GitHubAccountOwnershipCredential";
 
   constructor(private readonly httpClient: HttpClient) {}
 
-  getPayload(payloadRequest: GitHubAccOwnPayloadRequest): Promise<GitHubAccOwnPayload> {
+  getPayload(payloadRequest: ChallengeReq): Promise<Challenge> {
     return this.httpClient.payload(this.kind, payloadRequest);
   }
 
@@ -59,13 +24,13 @@ export class GitHubAccOwnershipProvider
     return this.httpClient.canIssue(this.kind, sessionId);
   }
 
-  async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccOwnIssueParams): Promise<GitHubAccOwnershipVC> {
+  async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccountReq): Promise<GitHubAccount> {
     const {
       chain,
       address,
       signature
     } = await signAlg({ message: signMessage });
-    return this.httpClient.issue<GitHubAccOwnershipVC, GitHubAccOwnRequest>(this.kind, {
+    return this.httpClient.issue<GitHubAccount, GitHubAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
       chain: chain,

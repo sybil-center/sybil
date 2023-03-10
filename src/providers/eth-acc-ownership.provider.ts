@@ -1,52 +1,19 @@
-import type { IVC } from "../util/vc.type.js";
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../util/sign-fn.type.js";
-
-
-export interface EthAccOwnershipIssueVCPayload {
-  messageId: string;
-  signMessage: string;
-}
-
-export interface IEthAccountOwnershipVC extends IVC {}
-
-/**
- * Request interface for generate ethereum account ownership VC
- */
-export interface EthAccountOwnershipRequest {
-  /**
-   * sign message id
-   */
-  messageId: string;
-
-  /**
-   * signed message by eth private key
-   */
-  signature: string;
-
-  address: string;
-
-  /**
-   * Client define his own subject information
-   */
-  credentialSubject?: object;
-  /**
-   * Entity with executing request defined id of vc
-   */
-  vcId?: string;
-}
-
-export type EthOwnershipOptions = {
-}
+import {
+  EthAccount,
+  EthAccountChallenge,
+  EthAccountIssueReq,
+  EthAccountReq
+} from "../types/ethereum/accoutn-credential.type.js";
 
 /**
  * Ethereum account ownership VC provider
  */
 export class EthAccOwnershipProvider
-  implements
-    ICredentialProvider<void, EthAccOwnershipIssueVCPayload, EthAccOwnershipIssueVCPayload, IEthAccountOwnershipVC>
-{
+  implements ICredentialProvider<void, EthAccountChallenge, EthAccountReq, EthAccount> {
+
   readonly kind = "EthAccountOwnershipCredential";
 
   constructor(private readonly httpClient: HttpClient) {}
@@ -58,7 +25,7 @@ export class EthAccOwnershipProvider
    * {@link EthAccountOwnershipRequest}
    * @throws Error
    */
-  getPayload(): Promise<EthAccOwnershipIssueVCPayload> {
+  getPayload(): Promise<EthAccountChallenge> {
     return this.httpClient.payload(this.kind);
   }
 
@@ -74,15 +41,16 @@ export class EthAccOwnershipProvider
    * @param signMessageAlg algorithm of signing message
    * @throws Error
    */
-  async issueVC(signMessageAlg: SignFn, params: EthAccOwnershipIssueVCPayload): Promise<IEthAccountOwnershipVC> {
+  async issueVC(signMessageAlg: SignFn, params: EthAccountReq): Promise<EthAccount> {
     const {
       signature,
       address
     } = await signMessageAlg({ message: params.signMessage });
-    return this.httpClient.issue<IEthAccountOwnershipVC, EthAccountOwnershipRequest>(this.kind, {
+    return this.httpClient.issue<EthAccount, EthAccountIssueReq>(this.kind, {
       messageId: params.messageId,
       signature: signature,
-      address: address
+      address: address,
+      chain: "did:pkh:eip155:1"
     });
   }
 }
