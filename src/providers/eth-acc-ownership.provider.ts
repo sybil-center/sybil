@@ -1,7 +1,8 @@
-import type { ICredentialProvider } from "./credential-provider.type.js";
-import type { SignFn } from "../util/sign-fn.type.js";
-import type { HttpClient } from "../util/http-client.js";
 import type { IVC } from "../util/vc.type.js";
+import { ICredentialProvider } from "./credential-provider.type.js";
+import { HttpClient } from "../util/http-client.js";
+import type { SignFn } from "../util/sign-fn.type.js";
+
 
 export interface EthAccOwnershipIssueVCPayload {
   messageId: string;
@@ -24,6 +25,8 @@ export interface EthAccountOwnershipRequest {
    */
   signature: string;
 
+  address: string;
+
   /**
    * Client define his own subject information
    */
@@ -32,6 +35,9 @@ export interface EthAccountOwnershipRequest {
    * Entity with executing request defined id of vc
    */
   vcId?: string;
+}
+
+export type EthOwnershipOptions = {
 }
 
 /**
@@ -69,10 +75,14 @@ export class EthAccOwnershipProvider
    * @throws Error
    */
   async issueVC(signMessageAlg: SignFn, params: EthAccOwnershipIssueVCPayload): Promise<IEthAccountOwnershipVC> {
-    const signature = await signMessageAlg({ message: params.signMessage });
+    const {
+      signature,
+      address
+    } = await signMessageAlg({ message: params.signMessage });
     return this.httpClient.issue<IEthAccountOwnershipVC, EthAccountOwnershipRequest>(this.kind, {
       messageId: params.messageId,
       signature: signature,
+      address: address
     });
   }
 }

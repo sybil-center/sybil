@@ -1,7 +1,8 @@
-import type { ICredentialProvider } from "./credential-provider.type.js";
-import type { SignFn } from "../util/sign-fn.type.js";
-import type { HttpClient } from "../util/http-client.js";
+import { ChainAlias } from "../util/chain-aliase.type.js";
 import type { IVC } from "../util/vc.type.js";
+import { ICredentialProvider } from "./credential-provider.type.js";
+import { HttpClient } from "../util/http-client.js";
+import type { SignFn } from "../util/sign-fn.type.js";
 
 export type TwitterAccOwnershipIssueParams = {
   sessionId: string;
@@ -9,7 +10,7 @@ export type TwitterAccOwnershipIssueParams = {
 };
 
 export type TwitterAccOwnershipPayloadRequest = {
-  redirectUrl: string;
+  redirectUrl?: string;
 };
 
 /**
@@ -46,6 +47,10 @@ export type TwitterAccOwnRequest = {
    * Sign message {@link TwitterAccOwnPayload#signMessage} by wallet / private key
    */
   signature: string;
+
+  address: string;
+
+  chain?: ChainAlias
 };
 
 export interface ITwitterAccountOwnershipVC extends IVC {
@@ -58,15 +63,18 @@ export interface ITwitterAccountOwnershipVC extends IVC {
   };
 }
 
+export type TwitterOwnershipOptions = {
+  redirectUrl?: string;
+  windowFeatures?: string;
+}
+
 export class TwitterAccOwnershipProvider
-  implements
-    ICredentialProvider<
-      TwitterAccOwnershipPayloadRequest,
-      TwitterAccOwnPayload,
-      TwitterAccOwnershipIssueParams,
-      ITwitterAccountOwnershipVC
-    >
-{
+  implements ICredentialProvider<
+    TwitterAccOwnershipPayloadRequest,
+    TwitterAccOwnPayload,
+    TwitterAccOwnershipIssueParams,
+    ITwitterAccountOwnershipVC
+  > {
   readonly kind = "TwitterAccountOwnershipCredential";
   constructor(private readonly httpClient: HttpClient) {}
 
@@ -88,10 +96,16 @@ export class TwitterAccOwnershipProvider
     signAlg: SignFn,
     { sessionId, signMessage }: TwitterAccOwnershipIssueParams
   ): Promise<ITwitterAccountOwnershipVC> {
-    const signature = await signAlg({ message: signMessage });
+    const {
+      signature,
+      address,
+      chain
+    } = await signAlg({ message: signMessage });
     return this.httpClient.issue<ITwitterAccountOwnershipVC, TwitterAccOwnRequest>(this.kind, {
       sessionId: sessionId,
       signature: signature,
+      chain: chain,
+      address: address
     });
   }
 }

@@ -1,4 +1,8 @@
-export function repeatUntil<T>(shouldStop: (t: T) => boolean, betweenMS: number, fn: () => Promise<T>) {
+export function repeatUntil<T>(
+  shouldStop: (t: T) => boolean,
+  betweenMS: number,
+  fn: () => Promise<T>
+) {
   return new Promise<T>(async (resolve) => {
     let shouldProceed = true;
     while (shouldProceed) {

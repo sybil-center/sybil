@@ -1,7 +1,9 @@
-import type { ICredentialProvider } from "./credential-provider.type.js";
-import type { SignFn } from "../util/sign-fn.type.js";
-import type { HttpClient } from "../util/http-client.js";
+import { ChainAlias } from "../util/chain-aliase.type.js";
 import type { IVC } from "../util/vc.type.js";
+import { ICredentialProvider } from "./credential-provider.type.js";
+import { HttpClient } from "../util/http-client.js";
+import type { SignFn } from "../util/sign-fn.type.js";
+
 
 export type GitHubAccOwnIssueParams = {
   sessionId: string;
@@ -9,7 +11,7 @@ export type GitHubAccOwnIssueParams = {
 };
 
 export type GitHubAccOwnPayloadRequest = {
-  redirectUrl: string;
+  redirectUrl?: string;
 };
 
 export type GitHubAccOwnPayload = {
@@ -21,6 +23,8 @@ export type GitHubAccOwnPayload = {
 export type GitHubAccOwnRequest = {
   sessionId: string;
   signature: string;
+  address: string;
+  chain?: ChainAlias;
 };
 
 export interface GitHubAccOwnershipVC extends IVC {
@@ -32,6 +36,11 @@ export interface GitHubAccOwnershipVC extends IVC {
       userPage: string;
     };
   };
+}
+
+export type GitHubOwnershipOptions = {
+  redirectUrl?: string,
+  windowFeature?: string
 }
 
 export class GitHubAccOwnershipProvider
@@ -51,10 +60,16 @@ export class GitHubAccOwnershipProvider
   }
 
   async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccOwnIssueParams): Promise<GitHubAccOwnershipVC> {
-    const signature = await signAlg({ message: signMessage });
+    const {
+      chain,
+      address,
+      signature
+    } = await signAlg({ message: signMessage });
     return this.httpClient.issue<GitHubAccOwnershipVC, GitHubAccOwnRequest>(this.kind, {
       sessionId: sessionId,
       signature: signature,
+      chain: chain,
+      address: address
     });
   }
 }

@@ -1,8 +1,7 @@
 import { FormEvent, useState } from "react";
 import styles from "@/styles/twitter-pos.module.css";
-import { Sybil, ITwitterAccountOwnershipVC, EthRequestSigner, type IEIP1193Provider } from "@sybil-center/sdk";
-
-const sybil = new Sybil();
+import { ITwitterAccountOwnershipVC, EthRequestSigner, type IEIP1193Provider } from "@sybil-center/sdk";
+import { sybil } from "@/service/sybil";
 
 export function TwitterPos() {
   const [state, setState] = useState<{

@@ -1,12 +1,11 @@
 import type { IClient } from "./client.type.js";
 import {
   EthAccOwnershipProvider,
-  EthOwnershipOptions,
-  IEthAccountOwnershipVC
+  type EthOwnershipOptions,
+  type IEthAccountOwnershipVC
 } from "../providers/eth-acc-ownership.provider.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../util/sign-fn.type.js";
-
 
 export class EthAccountClient implements IClient<IEthAccountOwnershipVC, EthOwnershipOptions> {
   private readonly provider: EthAccOwnershipProvider;

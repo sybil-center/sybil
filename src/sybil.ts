@@ -1,46 +1,62 @@
-import { IClient } from "./clients/client.type.js";
-import { TwitterClient } from "./clients/twitter.client.js";
-import { SignFn } from "./util/sign-fn.type.js";
-import { ITwitterAccountOwnershipVC } from "./providers/twitter-acc-ownership.provider.js";
-import { DiscordAccOwnVC } from "./providers/discord-acc-ownership.provider.js";
-import { DiscordClient } from "./clients/discord.client.js";
-import { IEthAccountOwnershipVC } from "./providers/eth-acc-ownership.provider.js";
-import { EthClient } from "./clients/eth.client.js";
-import { GitHubAccOwnershipVC } from "./providers/github-acc-ownership.provider.js";
-import { GithubClient } from "./clients/github.client.js";
+import type { IClient } from "./clients/client.type.js";
+import { TwitterAccountClient } from "./clients/twitter-account.client.js";
+import type { SignFn } from "./util/sign-fn.type.js";
+import { type ITwitterAccountOwnershipVC, type TwitterOwnershipOptions } from "./providers/twitter-acc-ownership.provider.js";
+import { type DiscordAccOwnVC, type DiscordOwnershipOptions } from "./providers/discord-acc-ownership.provider.js";
+import { DiscordAccountClient } from "./clients/discord-account.client.js";
+import { type EthOwnershipOptions, type IEthAccountOwnershipVC } from "./providers/eth-acc-ownership.provider.js";
+import { EthAccountClient } from "./clients/eth-account.client.js";
+import { type GitHubOwnershipOptions, type GitHubAccOwnershipVC } from "./providers/github-acc-ownership.provider.js";
+import { GithubAccountClient } from "./clients/github-account.client.js";
 import { HttpClient } from "./util/http-client.js";
 
 export { ITwitterAccountOwnershipVC, DiscordAccOwnVC, IEthAccountOwnershipVC, GitHubAccOwnershipVC };
 
 export type CredentialKinds = {
-  "twitter-account": ITwitterAccountOwnershipVC;
-  "discord-account": DiscordAccOwnVC;
-  "ethereum-account": IEthAccountOwnershipVC;
-  "github-account": GitHubAccOwnershipVC;
+  "twitter-account": {
+    kind: ITwitterAccountOwnershipVC,
+    options: TwitterOwnershipOptions
+  };
+  "discord-account": {
+    kind: DiscordAccOwnVC,
+    options: DiscordOwnershipOptions
+  };
+  "ethereum-account": {
+    kind: IEthAccountOwnershipVC,
+    options: EthOwnershipOptions
+  };
+  "github-account": {
+    kind: GitHubAccOwnershipVC,
+    options: GitHubOwnershipOptions
+  };
 };
 
 export type Clients = {
-  [K in keyof CredentialKinds]: IClient<CredentialKinds[K]>;
+  [K in keyof CredentialKinds]: IClient<CredentialKinds[K]["kind"], CredentialKinds[K]["options"]>;
 };
 
-const DEFAULT_ENDPOINT = new URL("https://app.sybil.center");
+const DEFAULT_ENDPOINT = new URL("https://api.sybil.center");
 
 export class Sybil {
   readonly clients: Clients;
 
-  constructor(frontEndpoint: URL = DEFAULT_ENDPOINT) {
-    const httpClient = new HttpClient(frontEndpoint);
+  constructor(readonly issuerDomain: URL = DEFAULT_ENDPOINT) {
+    const httpClient = new HttpClient(issuerDomain);
     this.clients = {
-      "twitter-account": new TwitterClient(httpClient),
-      "discord-account": new DiscordClient(httpClient),
-      "ethereum-account": new EthClient(httpClient),
-      "github-account": new GithubClient(httpClient),
+      "twitter-account": new TwitterAccountClient(httpClient) ,
+      "discord-account": new DiscordAccountClient(httpClient),
+      "ethereum-account": new EthAccountClient(httpClient),
+      "github-account": new GithubAccountClient(httpClient),
     };
   }
 
-  async credential<TName extends keyof CredentialKinds>(name: TName, signFn: SignFn): Promise<CredentialKinds[TName]> {
+  async credential<TName extends keyof CredentialKinds>(
+    name: TName,
+    signFn: SignFn,
+    options?: CredentialKinds[TName]["options"]
+  ): Promise<CredentialKinds[TName]["kind"]> {
     const client = this.clients[name];
     if (!client) throw new Error(`Provider ${name} not available`);
-    return client.issueCredential(signFn);
+    return client.issueCredential(signFn, options);
   }
 }

@@ -1,10 +1,12 @@
-import type { ICredentialProvider } from "./credential-provider.type.js";
-import type { SignFn } from "../util/sign-fn.type.js";
-import type { HttpClient } from "../util/http-client.js";
+import { ChainAlias } from "../util/chain-aliase.type.js";
 import type { IVC } from "../util/vc.type.js";
+import { ICredentialProvider } from "./credential-provider.type.js";
+import { HttpClient } from "../util/http-client.js";
+import type { SignFn } from "../util/sign-fn.type.js";
+
 
 export type ChallengeReq = {
-  redirectUrl: string;
+  redirectUrl?: string;
 };
 
 export type Challenge = {
@@ -16,6 +18,8 @@ export type Challenge = {
 export type IssueReq = {
   sessionId: string;
   signature: string;
+  chain?: ChainAlias;
+  address: string;
 };
 
 export interface CredentialReq {
@@ -34,6 +38,11 @@ export interface DiscordAccOwnVC extends IVC {
   };
 }
 
+export type DiscordOwnershipOptions = {
+  redirectUrl?: string;
+  windowFeature?: string;
+}
+
 export class DiscordAccOwnershipProvider
   implements ICredentialProvider<ChallengeReq, Challenge, CredentialReq, DiscordAccOwnVC>
 {
@@ -50,10 +59,16 @@ export class DiscordAccOwnershipProvider
   }
 
   async issueVC(signAlg: SignFn, { signMessage, sessionId }: CredentialReq): Promise<DiscordAccOwnVC> {
-    const signature = await signAlg({ message: signMessage });
+    const {
+      address,
+      chain,
+      signature
+    } = await signAlg({ message: signMessage });
     return this.httpClient.issue<DiscordAccOwnVC, IssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
+      address: address,
+      chain: chain
     });
   }
 }
