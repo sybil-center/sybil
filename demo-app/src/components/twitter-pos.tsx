@@ -1,12 +1,12 @@
 import { FormEvent, useState } from "react";
 import styles from "@/styles/twitter-pos.module.css";
-import { ITwitterAccountOwnershipVC, EthRequestSigner, type IEIP1193Provider } from "@sybil-center/sdk";
+import { TwitterAccountVC, EthRequestSigner, type IEIP1193Provider } from "@sybil-center/sdk";
 import { sybil } from "@/service/sybil";
 
 export function TwitterPos() {
   const [state, setState] = useState<{
     loading: boolean;
-    vc: ITwitterAccountOwnershipVC | null;
+    vc: TwitterAccountVC | null;
   }>({
     loading: false,
     vc: null,
