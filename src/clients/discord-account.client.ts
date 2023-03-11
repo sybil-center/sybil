@@ -1,28 +1,28 @@
 import type { IClient } from "./client.type.js";
 import {
-  DiscordAccOwnershipProvider,
-} from "../providers/discord-acc-ownership.provider.js";
+  DiscordAccountProvider,
+} from "../providers/discord-account.provider.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import { popupFeatures } from "../util/view.js";
 import { repeatUntil } from "../util/repeat-until.js";
 import {
-  DiscordAccount,
+  DiscordAccountVC,
   DiscordAccountOptions
-} from "../types/discord/account-credential.type.js"
+} from "../types/index.js"
 
 export class DiscordAccountClient
-  implements IClient<DiscordAccount, DiscordAccountOptions> {
+  implements IClient<DiscordAccountVC, DiscordAccountOptions> {
 
   constructor(
     httpClient: HttpClient,
-    private readonly provider = new DiscordAccOwnershipProvider(httpClient)
+    private readonly provider = new DiscordAccountProvider(httpClient)
   ) {}
 
   async issueCredential(
     signFn: SignFn,
     opt?: DiscordAccountOptions
-  ): Promise<DiscordAccount> {
+  ): Promise<DiscordAccountVC> {
     const payload = await this.provider.getPayload({
       redirectUrl: opt?.redirectUrl
     });
