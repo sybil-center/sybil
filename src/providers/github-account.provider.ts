@@ -10,7 +10,7 @@ import {
 } from "../types/github/account-credential.type.js";
 import { CredentialType } from "../types/index.js";
 
-export class GitHubAccOwnershipProvider
+export class GithubAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccountVC>
 {
   readonly kind: CredentialType = "GitHubAccountOwnershipCredential";

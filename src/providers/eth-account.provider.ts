@@ -12,7 +12,7 @@ import { CredentialType } from "../types/index.js";
 /**
  * Ethereum account ownership VC provider
  */
-export class EthAccOwnershipProvider
+export class EthAccountProvider
   implements ICredentialProvider<void, EthAccountChallenge, EthAccountReq, EthAccountVC> {
 
   readonly kind: CredentialType = "EthAccountOwnershipCredential";

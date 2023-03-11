@@ -10,7 +10,7 @@ import {
 } from "../types/twitter/account-credential.type.js";
 import { CredentialType } from "../types/index.js";
 
-export class TwitterAccOwnershipProvider
+export class TwitterAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, TwitterAccountReq, TwitterAccountVC> {
 
   readonly kind: CredentialType = "TwitterAccountOwnershipCredential";

@@ -9,7 +9,7 @@ import {
 } from "../types/discord/account-credential.type.js";
 import { CredentialType } from "../types/index.js";
 
-export class DiscordAccOwnershipProvider
+export class DiscordAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, DiscordAccountReq, DiscordAccountVC> {
 
   readonly kind: CredentialType = "DiscordAccountOwnershipCredential";
