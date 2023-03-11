@@ -1,11 +1,11 @@
-import { IssueReq } from "../base/credential.type.js";
+import { IssueReq } from "../base/index.js";
 
 export interface EthAccountChallenge {
   messageId: string;
   signMessage: string;
 }
 
-export interface EthAccountReq extends EthAccountChallenge{}
+export interface EthAccountReq extends EthAccountChallenge {}
 
 export interface EthAccountIssueReq extends IssueReq {
   messageId: string;
@@ -14,6 +14,6 @@ export interface EthAccountIssueReq extends IssueReq {
   chain?: string;
 }
 
-export interface EthAccount extends Credential {}
+export interface EthAccountVC extends Credential {}
 
 export interface EthAccountOptions {}

@@ -1,5 +1,5 @@
-import { IssueReq, Credential } from "../base/credential.type.js";
-import { ChainAlias } from "../base/chain-alias.type.js";
+import { IssueReq, Credential } from "../base/index.js";
+import { ChainAlias } from "../base/index.js";
 
 export interface TwitterAccountChallengeReq {
   redirectUrl?: string;
@@ -23,7 +23,7 @@ export interface TwitterAccountIssueReq extends IssueReq {
   address: string;
 }
 
-export interface TwitterAccount extends Credential {
+export interface TwitterAccountVC extends Credential {
   credentialSubject: {
     id: string;
     twitter: {
