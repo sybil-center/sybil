@@ -1,32 +1,30 @@
 import type { IClient } from "./clients/client.type.js";
 import { TwitterAccountClient } from "./clients/twitter-account.client.js";
-import type { SignFn } from "./util/sign-fn.type.js";
 import { DiscordAccountClient } from "./clients/discord-account.client.js";
 import { EthAccountClient } from "./clients/eth-account.client.js";
 import { GithubAccountClient } from "./clients/github-account.client.js";
 import { HttpClient } from "./util/http-client.js";
-import { TwitterAccount, TwitterAccountOptions } from "./types/twitter/account-credential.type.js";
-import { DiscordAccount, DiscordAccountOptions } from "./types/discord/account-credential.type.js";
-import { GitHubAccount, GitHubAccountOptions } from "./types/github/account-credential.type.js";
-import { EthAccount, EthAccountOptions } from "./types/ethereum/accoutn-credential.type.js";
-
-export { TwitterAccount, DiscordAccount, EthAccount, GitHubAccount };
+import type { SignFn } from "./types/index.js";
+import { TwitterAccountVC, TwitterAccountOptions } from "./types/index.js";
+import { DiscordAccountVC, DiscordAccountOptions } from "./types/index.js";
+import { GitHubAccountVC, GitHubAccountOptions } from "./types/index.js";
+import { EthAccountVC, EthAccountOptions } from "./types/index.js";
 
 export type CredentialKinds = {
   "twitter-account": {
-    kind: TwitterAccount,
+    kind: TwitterAccountVC,
     options: TwitterAccountOptions
   };
   "discord-account": {
-    kind: DiscordAccount,
+    kind: DiscordAccountVC,
     options: DiscordAccountOptions
   };
   "ethereum-account": {
-    kind: EthAccount,
+    kind: EthAccountVC,
     options: EthAccountOptions
   };
   "github-account": {
-    kind: GitHubAccount,
+    kind: GitHubAccountVC,
     options: GitHubAccountOptions
   };
 };
