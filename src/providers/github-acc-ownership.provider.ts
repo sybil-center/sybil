@@ -1,18 +1,19 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import {
-  GitHubAccount,
+  GitHubAccountVC,
   GitHubAccountChallenge as Challenge,
   GitHubAccountChallengeReq as ChallengeReq,
   GitHubAccountIssueReq,
   GitHubAccountReq
 } from "../types/github/account-credential.type.js";
+import { CredentialType } from "../types/index.js";
 
 export class GitHubAccOwnershipProvider
-  implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccount>
+  implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccountVC>
 {
-  readonly kind = "GitHubAccountOwnershipCredential";
+  readonly kind: CredentialType = "GitHubAccountOwnershipCredential";
 
   constructor(private readonly httpClient: HttpClient) {}
 
@@ -24,13 +25,13 @@ export class GitHubAccOwnershipProvider
     return this.httpClient.canIssue(this.kind, sessionId);
   }
 
-  async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccountReq): Promise<GitHubAccount> {
+  async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccountReq): Promise<GitHubAccountVC> {
     const {
       chain,
       address,
       signature
     } = await signAlg({ message: signMessage });
-    return this.httpClient.issue<GitHubAccount, GitHubAccountIssueReq>(this.kind, {
+    return this.httpClient.issue<GitHubAccountVC, GitHubAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
       chain: chain,

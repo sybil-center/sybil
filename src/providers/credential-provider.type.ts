@@ -1,4 +1,4 @@
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 
 export interface ICredentialProvider<TChallengeReq, TChallenge, TCredentialReq, TCredential> {
   getPayload(challengeReq: TChallengeReq): Promise<TChallenge>;

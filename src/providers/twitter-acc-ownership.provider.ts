@@ -1,22 +1,20 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import {
-  TwitterAccount,
+  TwitterAccountVC,
   TwitterAccountChallenge as Challenge,
   TwitterAccountChallengeReq as ChallengeReq,
   TwitterAccountIssueReq,
   TwitterAccountReq
 } from "../types/twitter/account-credential.type.js";
+import { CredentialType } from "../types/index.js";
 
 export class TwitterAccOwnershipProvider
-  implements ICredentialProvider<
-    ChallengeReq,
-    Challenge,
-    TwitterAccountReq,
-    TwitterAccount
-  > {
-  readonly kind = "TwitterAccountOwnershipCredential";
+  implements ICredentialProvider<ChallengeReq, Challenge, TwitterAccountReq, TwitterAccountVC> {
+
+  readonly kind: CredentialType = "TwitterAccountOwnershipCredential";
+
   constructor(private readonly httpClient: HttpClient) {}
 
   getPayload(payloadRequest: ChallengeReq): Promise<Challenge> {
@@ -36,13 +34,13 @@ export class TwitterAccOwnershipProvider
   async issueVC(
     signAlg: SignFn,
     { sessionId, signMessage }: TwitterAccountReq
-  ): Promise<TwitterAccount> {
+  ): Promise<TwitterAccountVC> {
     const {
       signature,
       address,
       chain
     } = await signAlg({ message: signMessage });
-    return this.httpClient.issue<TwitterAccount, TwitterAccountIssueReq>(this.kind, {
+    return this.httpClient.issue<TwitterAccountVC, TwitterAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
       chain: chain,

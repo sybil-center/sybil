@@ -1,28 +1,29 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import {
-  EthAccount,
+  EthAccountVC,
   EthAccountChallenge,
   EthAccountIssueReq,
   EthAccountReq
-} from "../types/ethereum/accoutn-credential.type.js";
+} from "../types/index.js";
+import { CredentialType } from "../types/index.js";
 
 /**
  * Ethereum account ownership VC provider
  */
 export class EthAccOwnershipProvider
-  implements ICredentialProvider<void, EthAccountChallenge, EthAccountReq, EthAccount> {
+  implements ICredentialProvider<void, EthAccountChallenge, EthAccountReq, EthAccountVC> {
 
-  readonly kind = "EthAccountOwnershipCredential";
+  readonly kind: CredentialType = "EthAccountOwnershipCredential";
 
   constructor(private readonly httpClient: HttpClient) {}
 
   /**
    * Get payload for issuing VC.
-   * Payload contains {@link EthAccOwnershipIssueVCPayload#message} that has to be signed by ETH wallet / account,
-   * and {@link EthAccOwnershipIssueVCPayload#messageId} that is id of message that has to be attached to
-   * {@link EthAccountOwnershipRequest}
+   * Payload contains {@link EthAccountChallenge#message} that has to be signed by ETH wallet / account,
+   * and {@link EthAccountChallenge#messageId} that is id of message that has to be attached to
+   * {@link EthAccountReq}
    * @throws Error
    */
   getPayload(): Promise<EthAccountChallenge> {
@@ -41,12 +42,12 @@ export class EthAccOwnershipProvider
    * @param signMessageAlg algorithm of signing message
    * @throws Error
    */
-  async issueVC(signMessageAlg: SignFn, params: EthAccountReq): Promise<EthAccount> {
+  async issueVC(signMessageAlg: SignFn, params: EthAccountReq): Promise<EthAccountVC> {
     const {
       signature,
       address
     } = await signMessageAlg({ message: params.signMessage });
-    return this.httpClient.issue<EthAccount, EthAccountIssueReq>(this.kind, {
+    return this.httpClient.issue<EthAccountVC, EthAccountIssueReq>(this.kind, {
       messageId: params.messageId,
       signature: signature,
       address: address,
