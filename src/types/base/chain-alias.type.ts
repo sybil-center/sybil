@@ -13,5 +13,4 @@ export type ChainAlias =
   | "did:pkh:eip155:137"
   | "solana"
   | "solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ"
-  | "did:pkh:solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ"
-  | string;
+  | "did:pkh:solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ";
