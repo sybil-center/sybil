@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { TwitterPos } from "@/components/twitter-pos";
 import { ConnectMetamask } from "@/components/connect-metamask";
+import { DiscordPos } from "@/components/discord-pos";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <main>
         <ConnectMetamask />
         <TwitterPos />
+        <DiscordPos />
       </main>
     </>
   );
