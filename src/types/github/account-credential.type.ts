@@ -23,7 +23,7 @@ export interface GitHubAccountIssueReq extends IssueReq {
   address: string;
 }
 
-export interface GitHubAccountVC extends Credential{
+export interface GitHubAccountVC extends Credential {
   credentialSubject: {
     id: string;
     github: {

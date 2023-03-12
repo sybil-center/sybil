@@ -1,4 +1,5 @@
 import { IssueReq } from "../base/index.js";
+import { Credential } from "../base/index.js";
 
 export interface EthAccountChallenge {
   messageId: string;
