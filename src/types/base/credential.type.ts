@@ -1,9 +1,10 @@
-import type { ProofType } from "./proof-type.js";
+import { ProofType } from "./proof-type.type.js";
+import { CredentialType } from "./credential-type.type.js";
 
 /**
  * Base interface of VC and its components
  */
-export interface IVC {
+export interface Credential {
   /**
    * JSON-LD context
    */
@@ -12,7 +13,7 @@ export interface IVC {
   /**
    * Types of VCs
    */
-  type: string[];
+  type: CredentialType[];
 
   /**
    * VC ID (DID, http URL e.t.c)
@@ -42,12 +43,12 @@ export interface IVC {
   credentialStatus?: CredentialStatus;
 
   /**
-   * Proof
+   * Proof. This field add
    */
   proof?: Proof;
 }
 
-export type CredentialSubject = Object;
+export type CredentialSubject = object;
 
 export interface Proof {
   type?: ProofType;
@@ -57,11 +58,45 @@ export interface Proof {
    */
   created?: string;
   proofPurpose?: string;
-  verificationMethod?: string; // public key that can verify the signature
-  proofValue?: string; // sing
+  verificationMethod?: string;
+  proofValue?: string;
   jws?: string;
 }
 
 export interface CredentialStatus {
   id: string;
 }
+
+/**
+ * Base interface for VC requests
+ */
+export interface IssueReq {
+
+  /**
+   * Entity with executing request defined id of vc
+   */
+  credentialId?: string;
+}
+
+/**
+ * For check is credential ready for issue
+ */
+export interface CanIssueVCEntry {
+  /**
+   * Session id
+   */
+  sessionId: string;
+}
+
+/**
+ * Response on "can issue" request
+ */
+export interface CanIssueVCResponse {
+  /**
+   * If true - VC can be issued,
+   * else - otherwise
+   */
+  canIssue: boolean;
+}
+
+export interface Challenge {}

@@ -1,6 +1,7 @@
 import { ISigner } from "./signer.type.js";
-import type { SignResult } from "../util/sign-fn.type.js";
+import type { SignResult } from "../types/index.js";
 import * as uint8arrays from "uint8arrays";
+import { ChainAlias } from "../types/index.js";
 
 export interface RequestArguments {
   readonly method: string;
@@ -26,7 +27,7 @@ export class EthRequestSigner implements ISigner {
     return {
       address: address,
       signature: signature,
-      chain: `did:pkh:eip155:${chainId}`
+      chain: `did:pkh:eip155:${chainId}` as ChainAlias
     };
   }
 

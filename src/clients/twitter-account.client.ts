@@ -1,25 +1,25 @@
 import type { IClient } from "./client.type.js";
 import {
-  type ITwitterAccountOwnershipVC,
-  TwitterAccOwnershipProvider,
-  type TwitterOwnershipOptions
-} from "../providers/twitter-acc-ownership.provider.js";
+  TwitterAccountProvider,
+} from "../providers/twitter-account.provider.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import { popupFeatures } from "../util/view.js";
 import { repeatUntil } from "../util/repeat-until.js";
+import { TwitterAccountVC, TwitterAccountOptions } from "../types/index.js";
 
-export class TwitterAccountClient implements IClient<ITwitterAccountOwnershipVC, TwitterOwnershipOptions> {
+export class TwitterAccountClient
+  implements IClient<TwitterAccountVC, TwitterAccountOptions> {
 
   constructor(
     httpClient: HttpClient,
-    private readonly provider = new TwitterAccOwnershipProvider(httpClient)
+    private readonly provider = new TwitterAccountProvider(httpClient)
   ) {}
 
   async issueCredential(
     signFn: SignFn,
-    opt?: TwitterOwnershipOptions
-  ): Promise<ITwitterAccountOwnershipVC> {
+    opt?: TwitterAccountOptions
+  ): Promise<TwitterAccountVC> {
     const payload = await this.provider.getPayload({
       redirectUrl: opt?.redirectUrl
     });

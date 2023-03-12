@@ -1,26 +1,25 @@
 import type { IClient } from "./client.type.js";
 import {
-  GitHubAccOwnershipProvider,
-  type GitHubAccOwnershipVC,
-  type GitHubOwnershipOptions
-} from "../providers/github-acc-ownership.provider.js";
+  GithubAccountProvider,
+} from "../providers/github-account.provider.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../util/sign-fn.type.js";
+import type { SignFn } from "../types/index.js";
 import { popupFeatures } from "../util/view.js";
 import { repeatUntil } from "../util/repeat-until.js";
+import { GitHubAccountVC, GitHubAccountOptions } from "../types/index.js";
 
 export class GithubAccountClient
-  implements IClient<GitHubAccOwnershipVC, GitHubOwnershipOptions> {
+  implements IClient<GitHubAccountVC, GitHubAccountOptions> {
 
   constructor(
     httpClient: HttpClient,
-    private readonly provider = new GitHubAccOwnershipProvider(httpClient)
+    private readonly provider = new GithubAccountProvider(httpClient)
   ) {}
 
   async issueCredential(
     signFn: SignFn,
-    opt?: GitHubOwnershipOptions
-  ): Promise<GitHubAccOwnershipVC> {
+    opt?: GitHubAccountOptions
+  ): Promise<GitHubAccountVC> {
     const payload = await this.provider.getPayload({
       redirectUrl: opt?.redirectUrl
     });
