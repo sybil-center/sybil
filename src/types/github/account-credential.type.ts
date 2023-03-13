@@ -1,7 +1,7 @@
-import { IssueReq, Credential } from "../base/index.js";
+import { IssueReq, Credential, ChallengeReq, Options } from "../base/index.js";
 import { ChainAlias } from "../base/index.js";
 
-export interface GitHubAccountChallengeReq {
+export interface GitHubAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
 }
 
@@ -23,7 +23,7 @@ export interface GitHubAccountIssueReq extends IssueReq {
   address: string;
 }
 
-export interface GitHubAccountVC extends Credential{
+export interface GitHubAccountVC extends Credential {
   credentialSubject: {
     id: string;
     github: {
@@ -34,7 +34,7 @@ export interface GitHubAccountVC extends Credential{
   };
 }
 
-export interface GitHubAccountOptions {
+export interface GitHubAccountOptions extends Options {
   redirectUrl?: string;
   windowFeature?: string;
 }
