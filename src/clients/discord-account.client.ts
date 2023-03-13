@@ -1,15 +1,10 @@
 import type { IClient } from "./client.type.js";
-import {
-  DiscordAccountProvider,
-} from "../providers/discord-account.provider.js";
+import { DiscordAccountProvider } from "../providers/discord-account.provider.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../types/index.js";
+import { DiscordAccountOptions, DiscordAccountVC } from "../types/index.js";
 import { popupFeatures } from "../util/view.js";
 import { repeatUntil } from "../util/repeat-until.js";
-import {
-  DiscordAccountVC,
-  DiscordAccountOptions
-} from "../types/index.js"
 
 export class DiscordAccountClient
   implements IClient<DiscordAccountVC, DiscordAccountOptions> {
@@ -33,11 +28,12 @@ export class DiscordAccountClient
       opt?.windowFeature ? opt?.windowFeature : popupFeatures()
     );
     if (!popup) throw new Error(`Can not open popup window to authenticate in Discord`);
-    await repeatUntil<boolean>(
-      (r) => r,
+    const result = await repeatUntil<boolean>(
+      (r) => (r instanceof Error) ? true : r,
       1000,
       () => this.provider.canIssue(payload.sessionId)
     );
+    if (result instanceof Error) throw result;
     return this.provider.issueVC(signFn, {
       sessionId: payload.sessionId,
       signMessage: payload.signMessage
