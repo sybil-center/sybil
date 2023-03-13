@@ -13,7 +13,7 @@ import { CredentialType } from "../types/index.js";
 export class TwitterAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, TwitterAccountReq, TwitterAccountVC> {
 
-  readonly kind: CredentialType = "TwitterAccountOwnershipCredential";
+  readonly kind: CredentialType = "TwitterAccount";
 
   constructor(private readonly httpClient: HttpClient) {}
 

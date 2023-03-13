@@ -4,10 +4,10 @@
  */
 export type CredentialType =
   | "VerifiableCredential"
-  | "EmptyCredential"
-  | "EthAddressExistsCredential"
-  | "EthAccountOwnershipCredential"
-  | "TwitterAccountOwnershipCredential"
-  | "GitHubAccountOwnershipCredential"
-  | "DiscordAccountOwnershipCredential"
+  | "Empty"
+  | "EthereumAddressExists"
+  | "EthereumAccount"
+  | "TwitterAccount"
+  | "GitHubAccount"
+  | "DiscordAccount"
 
