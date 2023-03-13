@@ -1,14 +1,14 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../types/index.js";
+import { CredentialType } from "../types/index.js";
 import {
-  TwitterAccountVC,
   TwitterAccountChallenge as Challenge,
   TwitterAccountChallengeReq as ChallengeReq,
   TwitterAccountIssueReq,
-  TwitterAccountReq
+  TwitterAccountReq,
+  TwitterAccountVC
 } from "../types/twitter/account-credential.type.js";
-import { CredentialType } from "../types/index.js";
 
 export class TwitterAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, TwitterAccountReq, TwitterAccountVC> {

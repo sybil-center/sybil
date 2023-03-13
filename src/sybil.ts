@@ -5,10 +5,16 @@ import { EthAccountClient } from "./clients/eth-account.client.js";
 import { GithubAccountClient } from "./clients/github-account.client.js";
 import { HttpClient } from "./util/http-client.js";
 import type { SignFn } from "./types/index.js";
-import { TwitterAccountVC, TwitterAccountOptions } from "./types/index.js";
-import { DiscordAccountVC, DiscordAccountOptions } from "./types/index.js";
-import { GitHubAccountVC, GitHubAccountOptions } from "./types/index.js";
-import { EthAccountVC, EthAccountOptions } from "./types/index.js";
+import {
+  DiscordAccountOptions,
+  DiscordAccountVC,
+  EthAccountOptions,
+  EthAccountVC,
+  GitHubAccountOptions,
+  GitHubAccountVC,
+  TwitterAccountOptions,
+  TwitterAccountVC
+} from "./types/index.js";
 
 export type CredentialKinds = {
   "twitter-account": {
@@ -41,10 +47,10 @@ export class Sybil {
   constructor(readonly issuerDomain: URL = DEFAULT_ENDPOINT) {
     const httpClient = new HttpClient(issuerDomain);
     this.clients = {
-      "twitter-account": new TwitterAccountClient(httpClient) ,
+      "twitter-account": new TwitterAccountClient(httpClient),
       "discord-account": new DiscordAccountClient(httpClient),
       "ethereum-account": new EthAccountClient(httpClient),
-      "github-account": new GithubAccountClient(httpClient),
+      "github-account": new GithubAccountClient(httpClient)
     };
   }
 

@@ -1,18 +1,17 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../types/index.js";
+import { CredentialType } from "../types/index.js";
 import {
-  GitHubAccountVC,
   GitHubAccountChallenge as Challenge,
   GitHubAccountChallengeReq as ChallengeReq,
   GitHubAccountIssueReq,
-  GitHubAccountReq
+  GitHubAccountReq,
+  GitHubAccountVC
 } from "../types/github/account-credential.type.js";
-import { CredentialType } from "../types/index.js";
 
 export class GithubAccountProvider
-  implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccountVC>
-{
+  implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccountVC> {
   readonly kind: CredentialType = "GitHubAccount";
 
   constructor(private readonly httpClient: HttpClient) {}
