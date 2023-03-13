@@ -15,7 +15,7 @@ import { CredentialType } from "../types/index.js";
 export class EthAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, EthAccountReq, EthAccountVC> {
 
-  readonly kind: CredentialType = "EthAccountOwnershipCredential";
+  readonly kind: CredentialType = "EthereumAccount";
 
   constructor(private readonly httpClient: HttpClient) {}
 

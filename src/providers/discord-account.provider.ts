@@ -12,7 +12,7 @@ import { CredentialType } from "../types/index.js";
 export class DiscordAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, DiscordAccountReq, DiscordAccountVC> {
 
-  readonly kind: CredentialType = "DiscordAccountOwnershipCredential";
+  readonly kind: CredentialType = "DiscordAccount";
 
   constructor(private readonly httpClient: HttpClient) {}
 

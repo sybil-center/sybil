@@ -13,7 +13,7 @@ import { CredentialType } from "../types/index.js";
 export class GithubAccountProvider
   implements ICredentialProvider<ChallengeReq, Challenge, GitHubAccountReq, GitHubAccountVC>
 {
-  readonly kind: CredentialType = "GitHubAccountOwnershipCredential";
+  readonly kind: CredentialType = "GitHubAccount";
 
   constructor(private readonly httpClient: HttpClient) {}
 
