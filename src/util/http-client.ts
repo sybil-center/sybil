@@ -14,14 +14,13 @@ export class HttpClient {
   >(credentialType: CredentialType, params?: TParams): Promise<TResponse> {
     // FIXME ts-essential Opaque
     const endpoint = new URL(challengeEP(credentialType), this.issuerDomain);
-    if (params) {
-      Object
-        .entries(params)
-        .forEach(([key, value]) => {
-          if (value) endpoint.searchParams.set(key, String(value));
-        });
-    }
-    return fetch(endpoint).then((r) => r.json());
+    return fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then((r) => r.json());
   }
 
   async canIssue(credentialType: CredentialType, sessionId: string): Promise<boolean> {

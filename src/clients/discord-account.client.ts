@@ -24,7 +24,8 @@ export class DiscordAccountClient
     opt?: DiscordAccountOptions
   ): Promise<DiscordAccountVC> {
     const payload = await this.provider.getPayload({
-      redirectUrl: opt?.redirectUrl
+      redirectUrl: opt?.redirectUrl,
+      custom: opt?.custom
     });
     const popup = window.open(
       payload.authUrl,

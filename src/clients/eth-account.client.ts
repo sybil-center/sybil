@@ -13,8 +13,13 @@ export class EthAccountClient implements IClient<EthAccountVC, EthAccountOptions
     this.provider = new EthAccountProvider(backend);
   }
 
-  async issueCredential(signFn: SignFn): Promise<EthAccountVC> {
-    const payload = await this.provider.getPayload();
+  async issueCredential(
+    signFn: SignFn,
+    opt?: EthAccountOptions
+  ): Promise<EthAccountVC> {
+    const payload = await this.provider.getPayload({
+      custom: opt?.custom
+    });
     return this.provider.issueVC(signFn, {
       messageId: payload.messageId,
       signMessage: payload.signMessage,

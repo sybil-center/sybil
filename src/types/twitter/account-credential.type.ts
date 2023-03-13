@@ -1,7 +1,7 @@
-import { IssueReq, Credential } from "../base/index.js";
+import { IssueReq, Credential, ChallengeReq, Options } from "../base/index.js";
 import { ChainAlias } from "../base/index.js";
 
-export interface TwitterAccountChallengeReq {
+export interface TwitterAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
 }
 
@@ -33,7 +33,7 @@ export interface TwitterAccountVC extends Credential {
   };
 }
 
-export interface TwitterAccountOptions {
+export interface TwitterAccountOptions extends Options {
   redirectUrl?: string;
   windowFeatures?: string;
 }

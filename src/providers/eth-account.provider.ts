@@ -1,9 +1,9 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
-import type { SignFn } from "../types/index.js";
+import type { EthAccountChallengeReq as ChallengeReq, SignFn } from "../types/index.js";
 import {
   EthAccountVC,
-  EthAccountChallenge,
+  EthAccountChallenge as Challenge,
   EthAccountIssueReq,
   EthAccountReq
 } from "../types/index.js";
@@ -13,7 +13,7 @@ import { CredentialType } from "../types/index.js";
  * Ethereum account ownership VC provider
  */
 export class EthAccountProvider
-  implements ICredentialProvider<void, EthAccountChallenge, EthAccountReq, EthAccountVC> {
+  implements ICredentialProvider<ChallengeReq, Challenge, EthAccountReq, EthAccountVC> {
 
   readonly kind: CredentialType = "EthAccountOwnershipCredential";
 
@@ -26,8 +26,10 @@ export class EthAccountProvider
    * {@link EthAccountReq}
    * @throws Error
    */
-  getPayload(): Promise<EthAccountChallenge> {
-    return this.httpClient.payload(this.kind);
+  getPayload(challengeReq: ChallengeReq): Promise<Challenge> {
+    return this.httpClient.payload<Challenge, ChallengeReq>(
+      this.kind, challengeReq
+    );
   }
 
   canIssue(sessionId: string): Promise<boolean> {

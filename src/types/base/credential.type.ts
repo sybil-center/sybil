@@ -68,6 +68,16 @@ export interface CredentialStatus {
 }
 
 /**
+ * Request entity for getting challenge
+ */
+export interface ChallengeReq {
+  /**
+   * Custom property that will be represented in Verifiable Credential
+   */
+  custom?: object;
+}
+
+/**
  * Base interface for VC requests
  */
 export interface IssueReq {
@@ -100,3 +110,7 @@ export interface CanIssueVCResponse {
 }
 
 export interface Challenge {}
+
+export interface Options {
+  custom?: object;
+}
