@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { EthRequestSigner, IEIP1193Provider, DiscordAccountVC } from "@sybil-center/sdk";
+import { DiscordAccountVC, EthRequestSigner, IEIP1193Provider } from "@sybil-center/sdk";
 import { sybil } from "@/service/sybil";
 import styles from "@/styles/twitter-pos.module.css";
 
@@ -16,15 +16,17 @@ export function DiscordPos() {
   const signer = () => {
     const injected = "ethereum" in window && (window.ethereum as IEIP1193Provider);
     if (!injected) throw new Error(`Ethereum injected provider is not present as browser extension`);
-    return new EthRequestSigner(injected)
-  }
+    return new EthRequestSigner(injected);
+  };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state.loading) return;
     setState({ loading: true, vc: null });
     sybil
-      .credential("discord-account", signer().sign)
+      .credential("discord-account", signer().sign, {
+        custom: { helloFrom: "@sybil-center/sdk" }
+      })
       .then((credential) => {
         console.log("Credential:", credential);
         setState({ loading: false, vc: credential });
