@@ -30,11 +30,12 @@ export class TwitterAccountClient
       opt?.windowFeatures ? opt?.windowFeatures : popupFeatures()
     );
     if (!popup) throw new Error(`Can not open popup window to authenticate in Twitter`);
-    await repeatUntil<boolean>(
-      (r) => r,
+    const result = await repeatUntil<boolean>(
+      (r) => (r instanceof Error) ? true : r,
       1000,
       () => this.provider.canIssue(payload.sessionId)
     );
+    if (result instanceof Error) throw result;
     return this.provider.issueVC(signFn, {
       sessionId: payload.sessionId,
       signMessage: payload.signMessage
