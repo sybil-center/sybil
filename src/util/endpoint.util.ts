@@ -6,7 +6,7 @@ export function issueEP(type: CredentialType) {
 }
 
 export function challengeEP(type: CredentialType) {
-  return `/api/v1/vcs/${urlCredentialType(type)}/payload`;
+  return `/api/v1/vcs/${urlCredentialType(type)}/challenge`;
 }
 
 export function canIssueEP(type: CredentialType) {
