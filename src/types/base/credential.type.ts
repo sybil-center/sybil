@@ -23,7 +23,7 @@ export interface Credential {
   /**
    * Entity that issued the VC (DID, http URL e.t.c)
    */
-  issuer: string;
+  issuer: { id: string };
 
   /**
    * Issuance date of VC
@@ -48,7 +48,9 @@ export interface Credential {
   proof?: Proof;
 }
 
-export type CredentialSubject = object;
+export type CredentialSubject = {
+  custom?: { [key: string]: any }
+};
 
 export interface Proof {
   type?: ProofType;

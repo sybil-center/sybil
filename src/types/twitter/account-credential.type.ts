@@ -30,6 +30,7 @@ export interface TwitterAccountVC extends Credential {
       id: string;
       username: string;
     }
+    custom?: { [key: string]: any }
   };
 }
 

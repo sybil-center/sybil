@@ -1,5 +1,4 @@
-import { ChallengeReq, IssueReq, Options } from "../base/index.js";
-import { Credential } from "../base/index.js";
+import { ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
 
 export interface EthAccountChallengeReq extends ChallengeReq {}
 

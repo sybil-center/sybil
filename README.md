@@ -66,7 +66,9 @@ credential = {
     id: "did:pkh:eip155:1:0xb9Baa2979F62c806Ca3fE8f6932E82Bb416112aA"
   },
   issuanceDate: "2023-03-14T12:30:44.883Z",
-  issuer: "did:key:z6Mkeq4TyTdAND6JTMKuCVWtiPi7V4vnLK8LnWSqEQrQz2Gr",
+  issuer: {
+    id: "did:key:z6Mkeq4TyTdAND6JTMKuCVWtiPi7V4vnLK8LnWSqEQrQz2Gr" 
+  },
   type: ["VerifiableCredential", "DiscordAccount"],
   proof: {
     type: "JsonWebSignature2020",

@@ -1,5 +1,4 @@
-import { ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
-import { ChainAlias } from "../base/index.js";
+import { ChainAlias, ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
 
 export interface DiscordAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
@@ -31,6 +30,7 @@ export interface DiscordAccountVC extends Credential {
       username: string;
       discriminator: string;
     };
+    custom?: { [key: string]: any }
   };
 }
 
