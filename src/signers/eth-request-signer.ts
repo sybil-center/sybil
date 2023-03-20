@@ -78,9 +78,8 @@ export class EthRequestSigner implements ISigner {
   }
 
   #normalizeSignature(signature: string): string {
-    return uint8arrays.toString(
-      uint8arrays.fromString(signature.substring(2)),
-      "base64"
-    );
+    const hexSign = signature.substring(2).toLowerCase();
+    const bytesSign = uint8arrays.fromString(hexSign, "hex");
+    return uint8arrays.toString(bytesSign, "base64");
   }
 }

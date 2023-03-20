@@ -8,6 +8,7 @@ export {
   GitHubAccountVC,
   SignFn,
   SignResult,
-  ChainAlias
+  ChainAlias,
+  ProofType
 } from "./types/index.js"
 

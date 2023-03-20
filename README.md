@@ -187,7 +187,7 @@ function useSign() {
     const message = args.message
     const sign = await signMessageAsync({ message: message });
     const signature = uint8array.toString(
-      uint8array.fromString(sign.substring(2)),
+      uint8array.fromString(sign.substring(2), "hex"),
       "base64"
     );
     return {
@@ -266,7 +266,7 @@ class EthRequestSigner implements ISigner {
 
   #normalizeSignature(signature: string): string {
     return uint8arrays.toString(
-      uint8arrays.fromString(signature.substring(2)),
+      uint8arrays.fromString(signature.substring(2), "hex"),
       "base64"
     );
   }
