@@ -1,5 +1,5 @@
 import { IssueReq, Credential, ChallengeReq, Options } from "../base/index.js";
-import { ChainAlias } from "../base/index.js";
+import { SignAlgAlias } from "../base/index.js";
 
 export interface TwitterAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
@@ -19,8 +19,8 @@ export interface TwitterAccountReq {
 export interface TwitterAccountIssueReq extends IssueReq {
   sessionId: string;
   signature: string;
-  chain?: ChainAlias;
-  address: string;
+  signAlg?: SignAlgAlias;
+  publicId: string;
 }
 
 export interface TwitterAccountVC extends Credential {

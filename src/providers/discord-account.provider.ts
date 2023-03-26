@@ -25,17 +25,17 @@ export class DiscordAccountProvider
     return this.httpClient.canIssue(this.kind, sessionId);
   }
 
-  async issueVC(signAlg: SignFn, { signMessage, sessionId }: DiscordAccountReq): Promise<DiscordAccountVC> {
+  async issueVC(signFn: SignFn, { signMessage, sessionId }: DiscordAccountReq): Promise<DiscordAccountVC> {
     const {
-      address,
-      chain,
+      publicId,
+      signAlg,
       signature
-    } = await signAlg({ message: signMessage });
+    } = await signFn({ message: signMessage });
     return this.httpClient.issue<DiscordAccountVC, DiscordAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
-      address: address,
-      chain: chain
+      publicId: publicId,
+      signAlg: signAlg
     });
   }
 }

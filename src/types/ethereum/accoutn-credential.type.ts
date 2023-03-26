@@ -12,8 +12,8 @@ export interface EthAccountReq extends EthAccountChallenge {}
 export interface EthAccountIssueReq extends IssueReq {
   messageId: string;
   signature: string;
-  address: string;
-  chain?: string;
+  publicId: string;
+  signAlg?: string;
 }
 
 export interface EthAccountVC extends Credential {}

@@ -47,13 +47,13 @@ export class EthAccountProvider
   async issueVC(signMessageAlg: SignFn, params: EthAccountReq): Promise<EthAccountVC> {
     const {
       signature,
-      address
+      publicId
     } = await signMessageAlg({ message: params.signMessage });
     return this.httpClient.issue<EthAccountVC, EthAccountIssueReq>(this.kind, {
       messageId: params.messageId,
       signature: signature,
-      address: address,
-      chain: "did:pkh:eip155:1"
+      publicId: publicId,
+      signAlg: "did:pkh:eip155:1"
     });
   }
 }

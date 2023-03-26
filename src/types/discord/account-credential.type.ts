@@ -1,4 +1,4 @@
-import { ChainAlias, ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
+import { SignAlgAlias, ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
 
 export interface DiscordAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
@@ -13,8 +13,8 @@ export interface DiscordAccountChallenge {
 export interface DiscordAccountIssueReq extends IssueReq {
   sessionId: string;
   signature: string;
-  chain?: ChainAlias;
-  address: string;
+  signAlg?: SignAlgAlias;
+  publicId: string;
 }
 
 export interface DiscordAccountReq {

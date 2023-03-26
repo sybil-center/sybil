@@ -24,17 +24,17 @@ export class GithubAccountProvider
     return this.httpClient.canIssue(this.kind, sessionId);
   }
 
-  async issueVC(signAlg: SignFn, { sessionId, signMessage }: GitHubAccountReq): Promise<GitHubAccountVC> {
+  async issueVC(signFn: SignFn, { sessionId, signMessage }: GitHubAccountReq): Promise<GitHubAccountVC> {
     const {
-      chain,
-      address,
+      signAlg,
+      publicId,
       signature
-    } = await signAlg({ message: signMessage });
+    } = await signFn({ message: signMessage });
     return this.httpClient.issue<GitHubAccountVC, GitHubAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
-      chain: chain,
-      address: address
+      signAlg: signAlg,
+      publicId: publicId
     });
   }
 }

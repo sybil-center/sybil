@@ -1,4 +1,4 @@
-import { ChainAlias } from "./chain-alias.type.js";
+import { SignAlgAlias } from "./chain-alias.type.js";
 
 export type SignResult = {
   /**
@@ -7,15 +7,15 @@ export type SignResult = {
   signature: string;
 
   /**
-   * Chain address in human-readable format
+   * Blockchain address in human-readable format or public key as base64
    */
-  address: string;
+  publicId: string;
 
   /**
    * Blockchain id according to
    * {@see https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md}
    * it also can be used with "did:pkh:" prefix
    */
-  chain?: ChainAlias;
+  signAlg?: SignAlgAlias;
 }
 export type SignFn = (args: { message: string }) => Promise<SignResult>;

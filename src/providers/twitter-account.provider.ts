@@ -27,24 +27,24 @@ export class TwitterAccountProvider
 
   /**
    * Make request to issuer to issue VC
-   * @param signAlg algorithm for sign message
+   * @param signFn algorithm for sign message
    * @param sessionId id of session
    * @param signMessage message which will be signed
    */
   async issueVC(
-    signAlg: SignFn,
+    signFn: SignFn,
     { sessionId, signMessage }: TwitterAccountReq
   ): Promise<TwitterAccountVC> {
     const {
       signature,
-      address,
-      chain
-    } = await signAlg({ message: signMessage });
+      publicId,
+      signAlg
+    } = await signFn({ message: signMessage });
     return this.httpClient.issue<TwitterAccountVC, TwitterAccountIssueReq>(this.kind, {
       sessionId: sessionId,
       signature: signature,
-      chain: chain,
-      address: address
+      signAlg: signAlg,
+      publicId: publicId
     });
   }
 }

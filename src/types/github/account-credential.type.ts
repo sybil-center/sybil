@@ -1,4 +1,4 @@
-import { ChainAlias, ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
+import { SignAlgAlias, ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
 
 export interface GitHubAccountChallengeReq extends ChallengeReq {
   redirectUrl?: string;
@@ -18,8 +18,8 @@ export interface GitHubAccountReq {
 export interface GitHubAccountIssueReq extends IssueReq {
   sessionId: string;
   signature: string;
-  chain?: ChainAlias;
-  address: string;
+  signAlg?: SignAlgAlias;
+  publicId: string;
 }
 
 export interface GitHubAccountVC extends Credential {
