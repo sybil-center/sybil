@@ -1,4 +1,4 @@
-import { canIssueEP, challengeEP, issueEP } from "./endpoint.util.js";
+import { canIssueEP, challengeEP, issueEP, ownerProofEP } from "./endpoint.util.js";
 import { CredentialType } from "../types/index.js";
 
 export class HttpClient {
@@ -23,7 +23,7 @@ export class HttpClient {
     });
     const body = await resp.json();
     if (resp.status === 200) {
-      return body
+      return body;
     }
     throw new Error(body.message);
   }
@@ -48,6 +48,23 @@ export class HttpClient {
 
   async issue<TResponse, TParams = any>(credentialType: CredentialType, params: TParams): Promise<TResponse> {
     const endpoint = new URL(issueEP(credentialType), this.issuerDomain);
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    });
+    const body = await resp.json();
+    if (resp.status === 200) {
+      return body;
+    }
+    throw new Error(body.message);
+  }
+
+
+  async proof<TProofResp, TParams = any>(credentialType: CredentialType, params: TParams): Promise<TProofResp> {
+    const endpoint = new URL(ownerProofEP(credentialType), this.issuerDomain);
     const resp = await fetch(endpoint, {
       method: "POST",
       headers: {

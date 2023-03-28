@@ -19,4 +19,16 @@ export interface EthAccountIssueReq extends IssueReq {
 
 export interface EthAccountVC extends Credential {}
 
-export interface EthAccountOptions extends Options {}
+export interface EthAccountOptions extends Options {
+  ownerProofFn?: SignFn;
+}
+
+export interface OwnerProofEthAccount {
+  sessionId: string;
+  signature: string;
+  publicId: string;
+}
+
+export interface EthAccountProofResp {
+  ethereumAddress: string;
+}

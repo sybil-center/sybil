@@ -18,6 +18,9 @@ export class EthAccountClient implements IClient<EthAccountVC, EthAccountOptions
     const challenge = await this.provider.getPayload({
       custom: opt?.custom
     });
+    if (opt?.ownerProofFn) {
+      await this.provider.ownerProof(opt.ownerProofFn, challenge);
+    }
     return await this.provider.issueVC(signFn, {
       sessionId: challenge.sessionId,
       issueChallenge: challenge.issueChallenge
