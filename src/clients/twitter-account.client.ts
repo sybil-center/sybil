@@ -38,7 +38,7 @@ export class TwitterAccountClient
     if (result instanceof Error) throw result;
     return this.provider.issueVC(signFn, {
       sessionId: payload.sessionId,
-      signMessage: payload.signMessage
+      issueChallenge: payload.issueChallenge
     });
   }
 }

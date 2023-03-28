@@ -8,12 +8,12 @@ export interface TwitterAccountChallengeReq extends ChallengeReq {
 export interface TwitterAccountChallenge {
   authUrl: string;
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface TwitterAccountReq {
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface TwitterAccountIssueReq extends IssueReq {

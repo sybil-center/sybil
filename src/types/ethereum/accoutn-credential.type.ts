@@ -1,16 +1,17 @@
-import { ChallengeReq, Credential, IssueReq, Options } from "../base/index.js";
+import { ChallengeReq, Credential, IssueReq, Options, SignFn } from "../base/index.js";
 
 export interface EthAccountChallengeReq extends ChallengeReq {}
 
 export interface EthAccountChallenge {
-  messageId: string;
-  signMessage: string;
+  sessionId: string;
+  issueChallenge: string;
+  ownerChallenge: string;
 }
 
-export interface EthAccountReq extends EthAccountChallenge {}
+export type EthAccountReq = Omit<EthAccountChallenge, "ownerChallenge">
 
 export interface EthAccountIssueReq extends IssueReq {
-  messageId: string;
+  sessionId: string;
   signature: string;
   publicId: string;
   signAlg?: string;

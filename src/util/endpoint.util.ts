@@ -12,3 +12,7 @@ export function challengeEP(type: CredentialType) {
 export function canIssueEP(type: CredentialType) {
   return `/api/v1/vcs/${urlCredentialType(type)}/can-issue`
 }
+
+export function signCallbackEP(type: CredentialType): string {
+  return `/api/v1/vcs/${urlCredentialType(type)}/owner-proof`
+}

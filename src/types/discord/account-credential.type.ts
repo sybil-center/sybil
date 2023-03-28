@@ -7,7 +7,7 @@ export interface DiscordAccountChallengeReq extends ChallengeReq {
 export interface DiscordAccountChallenge {
   authUrl: string;
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface DiscordAccountIssueReq extends IssueReq {
@@ -19,7 +19,7 @@ export interface DiscordAccountIssueReq extends IssueReq {
 
 export interface DiscordAccountReq {
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface DiscordAccountVC extends Credential {

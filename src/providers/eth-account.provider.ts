@@ -1,19 +1,29 @@
 import { ICredentialProvider } from "./credential-provider.type.js";
 import { HttpClient } from "../util/http-client.js";
-import type { EthAccountChallengeReq as ChallengeReq, SignFn } from "../types/index.js";
+import type {
+  EthAccountChallengeReq as ChallengeReq, EthAccountProofResp,
+  OwnerProofEthAccount,
+  SignFn
+} from "../types/index.js";
 import {
-  EthAccountVC,
+  CredentialType,
   EthAccountChallenge as Challenge,
   EthAccountIssueReq,
-  EthAccountReq
+  EthAccountReq,
+  EthAccountVC
 } from "../types/index.js";
-import { CredentialType } from "../types/index.js";
 
 /**
  * Ethereum account ownership VC provider
  */
 export class EthAccountProvider
-  implements ICredentialProvider<ChallengeReq, Challenge, EthAccountReq, EthAccountVC> {
+  implements
+    ICredentialProvider<
+    ChallengeReq,
+    Challenge,
+    EthAccountReq,
+    EthAccountVC
+  >,
 
   readonly kind: CredentialType = "EthereumAccount";
 
@@ -22,7 +32,7 @@ export class EthAccountProvider
   /**
    * Get payload for issuing VC.
    * Payload contains {@link EthAccountChallenge#message} that has to be signed by ETH wallet / account,
-   * and {@link EthAccountChallenge#messageId} that is id of message that has to be attached to
+   * and {@link EthAccountChallenge#sessionId} that is id of message that has to be attached to
    * {@link EthAccountReq}
    * @throws Error
    */
@@ -47,13 +57,14 @@ export class EthAccountProvider
   async issueVC(signMessageAlg: SignFn, params: EthAccountReq): Promise<EthAccountVC> {
     const {
       signature,
-      publicId
-    } = await signMessageAlg({ message: params.signMessage });
+      publicId,
+      signAlg
+    } = await signMessageAlg({ message: params.issueChallenge });
     return this.httpClient.issue<EthAccountVC, EthAccountIssueReq>(this.kind, {
-      messageId: params.messageId,
+      sessionId: params.sessionId,
       signature: signature,
       publicId: publicId,
-      signAlg: "did:pkh:eip155:1"
+      signAlg: signAlg
     });
   }
 }

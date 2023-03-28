@@ -36,7 +36,7 @@ export class GithubAccountClient
     if (result instanceof Error) throw result;
     return this.provider.issueVC(signFn, {
       sessionId: payload.sessionId,
-      signMessage: payload.signMessage
+      issueChallenge: payload.issueChallenge
     });
   }
 }

@@ -7,12 +7,12 @@ export interface GitHubAccountChallengeReq extends ChallengeReq {
 export interface GitHubAccountChallenge {
   authUrl: string;
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface GitHubAccountReq {
   sessionId: string;
-  signMessage: string;
+  issueChallenge: string;
 }
 
 export interface GitHubAccountIssueReq extends IssueReq {

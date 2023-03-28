@@ -1,10 +1,8 @@
 import type { IClient } from "./client.type.js";
-import {
-  EthAccountProvider,
-} from "../providers/eth-account.provider.js";
+import { EthAccountProvider } from "../providers/eth-account.provider.js";
 import { HttpClient } from "../util/http-client.js";
 import type { SignFn } from "../types/index.js";
-import { EthAccountVC, EthAccountOptions } from "../types/index.js";
+import { EthAccountOptions, EthAccountVC } from "../types/index.js";
 
 export class EthAccountClient implements IClient<EthAccountVC, EthAccountOptions> {
   private readonly provider: EthAccountProvider;
@@ -17,12 +15,12 @@ export class EthAccountClient implements IClient<EthAccountVC, EthAccountOptions
     signFn: SignFn,
     opt?: EthAccountOptions
   ): Promise<EthAccountVC> {
-    const payload = await this.provider.getPayload({
+    const challenge = await this.provider.getPayload({
       custom: opt?.custom
     });
-    return this.provider.issueVC(signFn, {
-      messageId: payload.messageId,
-      signMessage: payload.signMessage,
+    return await this.provider.issueVC(signFn, {
+      sessionId: challenge.sessionId,
+      issueChallenge: challenge.issueChallenge
     });
   }
 }
