@@ -1,7 +1,9 @@
 import { FormEvent, useState } from "react";
 import styles from "@/styles/twitter-pos.module.css";
-import { TwitterAccountVC, EthRequestSigner, type IEIP1193Provider } from "@sybil-center/sdk";
-import { sybil } from "@/service/sybil";
+import { TwitterAccountVC, EthProofProvider, type IEIP1193Provider, Sybil } from "@sybil-center/sdk";
+
+export const sybil = new Sybil(
+  { apiKey: "get API keys from Dev Portal - https://app.sybil.center/devportal" });
 
 export function TwitterPos() {
   const [state, setState] = useState<{
@@ -12,18 +14,18 @@ export function TwitterPos() {
     vc: null,
   });
 
-  const signer = () => {
+  const proofProvider = () => {
     const injected = "ethereum" in window && (window.ethereum as IEIP1193Provider);
     if (!injected) throw new Error(`Only injected provider is supported`);
-    return new EthRequestSigner(injected);
+    return new EthProofProvider(injected);
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state.loading) return;
     setState({ loading: true, vc: null });
     sybil
-      .credential("twitter-account", signer().sign)
+      .credential("twitter-account", await proofProvider().proof())
       .then((credential) => {
         console.log("Credential:", credential);
         setState({ loading: false, vc: credential });

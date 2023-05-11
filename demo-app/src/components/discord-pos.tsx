@@ -1,8 +1,10 @@
 import { FormEvent, useState } from "react";
-import { DiscordAccountVC, EthRequestSigner, IEIP1193Provider } from "@sybil-center/sdk";
-import { sybil } from "@/service/sybil";
+import { DiscordAccountVC, SolanaProofProvider, SolanaProvider, Sybil } from "@sybil-center/sdk";
 import styles from "@/styles/twitter-pos.module.css";
 
+export const sybil = new Sybil(
+  { apiKey: "get API keys from Dev Portal - https://app.sybil.center/devportal" },
+);
 
 export function DiscordPos() {
   const [state, setState] = useState<{
@@ -13,19 +15,22 @@ export function DiscordPos() {
     vc: null
   });
 
-  const signer = () => {
-    const injected = "ethereum" in window && (window.ethereum as IEIP1193Provider);
-    if (!injected) throw new Error(`Ethereum injected provider is not present as browser extension`);
-    return new EthRequestSigner(injected);
+  const proofProvider = (): SolanaProofProvider => {
+    const injected = "phantom" in window && (window.phantom as any);
+    if (injected) {
+      return new SolanaProofProvider(injected.solana as SolanaProvider);
+    }
+    window.open("https://phantom.app/", "_blank");
+    throw new Error(`Only injected provider is supported`);
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (state.loading) return;
     setState({ loading: true, vc: null });
     sybil
-      .credential("discord-account", signer().sign, {
-        custom: { helloFrom: "@sybil-center/sdk" }
+      .credential("discord-account", await proofProvider().proof(), {
+        custom: { helloFrom: "@sybil-center/sdk" },
       })
       .then((credential) => {
         console.log("Credential:", credential);
