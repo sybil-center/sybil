@@ -1,66 +1,78 @@
-import type { IClient } from "./clients/client.type.js";
-import { TwitterAccountClient } from "./clients/twitter-account.client.js";
-import { DiscordAccountClient } from "./clients/discord-account.client.js";
-import { EthAccountClient } from "./clients/eth-account.client.js";
-import { GithubAccountClient } from "./clients/github-account.client.js";
-import { HttpClient } from "./util/http-client.js";
-import type { SignFn } from "./types/index.js";
-import {
-  DiscordAccountOptions,
-  DiscordAccountVC,
-  EthAccountOptions,
-  EthAccountVC,
-  GitHubAccountOptions,
-  GitHubAccountVC,
-  TwitterAccountOptions,
-  TwitterAccountVC
-} from "./types/index.js";
+import { TwitterAccountIssuer, TwitterAccountOptions, TwitterAccountVC } from "./issuers/twitter-account/index.js";
+import { DiscordAccountIssuer, DiscordAccountOptions, DiscordAccountVC } from "./issuers/discord-account/index.js";
+import { EthAccountIssuer, EthAccountOptions, EthAccountVC } from "./issuers/ethereum-account/index.js";
+import { GithubAccountIssuer, GitHubAccountOptions, GitHubAccountVC } from "./issuers/github-account/index.js";
+import { HttpClient } from "./base/http-client.js";
+import { APIKeys, Credential, SubjectProof, VerifyResult } from "./base/types/index.js";
+import { Optionals } from "./base/types/useful.js";
 
 export type CredentialKinds = {
   "twitter-account": {
     kind: TwitterAccountVC,
+    issuer: TwitterAccountIssuer
     options: TwitterAccountOptions
   };
   "discord-account": {
     kind: DiscordAccountVC,
+    issuer: DiscordAccountIssuer,
     options: DiscordAccountOptions
   };
   "ethereum-account": {
     kind: EthAccountVC,
+    issuer: EthAccountIssuer,
     options: EthAccountOptions
   };
   "github-account": {
     kind: GitHubAccountVC,
+    issuer: GithubAccountIssuer,
     options: GitHubAccountOptions
   };
 };
 
-export type Clients = {
-  [K in keyof CredentialKinds]: IClient<CredentialKinds[K]["kind"], CredentialKinds[K]["options"]>;
+export type Issuers = {
+  [K in keyof CredentialKinds]: CredentialKinds[K]["issuer"];
 };
 
-const DEFAULT_ENDPOINT = new URL("https://api.sybil.center");
 
 export class Sybil {
-  readonly clients: Clients;
+  readonly issuers: Issuers;
+  private readonly httpClient: HttpClient;
 
-  constructor(readonly issuerDomain: URL = DEFAULT_ENDPOINT) {
-    const httpClient = new HttpClient(issuerDomain);
-    this.clients = {
-      "twitter-account": new TwitterAccountClient(httpClient),
-      "discord-account": new DiscordAccountClient(httpClient),
-      "ethereum-account": new EthAccountClient(httpClient),
-      "github-account": new GithubAccountClient(httpClient)
+  constructor(
+    readonly apiKeys: Optionals<APIKeys, "secretKey">,
+    readonly issuerDomain?: URL
+  ) {
+    this.httpClient = new HttpClient(this.apiKeys, issuerDomain);
+    this.issuers = {
+      "twitter-account": new TwitterAccountIssuer(this.httpClient),
+      "discord-account": new DiscordAccountIssuer(this.httpClient),
+      "ethereum-account": new EthAccountIssuer(this.httpClient),
+      "github-account": new GithubAccountIssuer(this.httpClient)
     };
   }
 
   async credential<TName extends keyof CredentialKinds>(
     name: TName,
-    signFn: SignFn,
+    subjectProof: SubjectProof,
     options?: CredentialKinds[TName]["options"]
   ): Promise<CredentialKinds[TName]["kind"]> {
-    const client = this.clients[name];
-    if (!client) throw new Error(`Provider ${name} not available`);
-    return client.issueCredential(signFn, options);
+    const issuer = this.issuer(name);
+    // @ts-ignore
+    return issuer.issueCredential(subjectProof, options);
+  }
+
+  issuer<TName extends keyof Issuers>(
+    name: TName
+  ): Issuers[TName] {
+    const issuer = this.issuers[name];
+    if (!issuer) throw new Error(`Issuer ${name} not available`);
+    return issuer;
+  }
+
+  /** Execute request to verify Credential */
+  async verify<TCredential = Credential>(
+    credential: TCredential
+  ): Promise<VerifyResult> {
+    return this.httpClient.verify<TCredential>(credential);
   }
 }

@@ -13,6 +13,6 @@ export function canIssueEP(type: CredentialType) {
   return `/api/v1/vcs/${urlCredentialType(type)}/can-issue`
 }
 
-export function ownerProofEP(type: CredentialType): string {
-  return `/api/v1/vcs/${urlCredentialType(type)}/owner-proof`
+export function verifyCredentialEP(): string {
+  return "/api/v1/vcs/verify";
 }
