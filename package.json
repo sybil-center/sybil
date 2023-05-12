@@ -1,6 +1,6 @@
 {
   "name": "@sybil-center/sdk",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Request a Verifiable Credential from the web",
   "license": "(Apache-2.0 AND MIT)",
   "repository": {
@@ -9,22 +9,28 @@
   },
   "type": "module",
   "files": [
-    "dist/"
+    "/dist"
   ],
   "sideEffects": false,
   "typesVersions": {
     "*": {
-      "*": [
-        "dist/*"
-      ]
+      "*": [ "dist/index.d.ts" ],
+      "types": [ "dist/types/index.d.ts" ],
+      "util": [ "dist/util/index.d.ts" ]
     }
   },
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
+    },
+    "./util": {
+      "types": "./dist/util/index.d.ts",
+      "default": "./dist/util/index.js"
     },
     "./package.json": "./package.json"
   },

@@ -1,46 +1,78 @@
-import { IClient } from "./clients/client.type.js";
-import { TwitterClient } from "./clients/twitter.client.js";
-import { SignFn } from "./util/sign-fn.type.js";
-import { ITwitterAccountOwnershipVC } from "./providers/twitter-acc-ownership.provider.js";
-import { DiscordAccOwnVC } from "./providers/discord-acc-ownership.provider.js";
-import { DiscordClient } from "./clients/discord.client.js";
-import { IEthAccountOwnershipVC } from "./providers/eth-acc-ownership.provider.js";
-import { EthClient } from "./clients/eth.client.js";
-import { GitHubAccOwnershipVC } from "./providers/github-acc-ownership.provider.js";
-import { GithubClient } from "./clients/github.client.js";
-import { HttpClient } from "./util/http-client.js";
-
-export { ITwitterAccountOwnershipVC, DiscordAccOwnVC, IEthAccountOwnershipVC, GitHubAccOwnershipVC };
+import { TwitterAccountIssuer, TwitterAccountOptions, TwitterAccountVC } from "./issuers/twitter-account/index.js";
+import { DiscordAccountIssuer, DiscordAccountOptions, DiscordAccountVC } from "./issuers/discord-account/index.js";
+import { EthAccountIssuer, EthAccountOptions, EthAccountVC } from "./issuers/ethereum-account/index.js";
+import { GithubAccountIssuer, GitHubAccountOptions, GitHubAccountVC } from "./issuers/github-account/index.js";
+import { HttpClient } from "./base/http-client.js";
+import { APIKeys, Credential, SubjectProof, VerifyResult } from "./base/types/index.js";
+import { Optionals } from "./base/types/useful.js";
 
 export type CredentialKinds = {
-  "twitter-account": ITwitterAccountOwnershipVC;
-  "discord-account": DiscordAccOwnVC;
-  "ethereum-account": IEthAccountOwnershipVC;
-  "github-account": GitHubAccOwnershipVC;
+  "twitter-account": {
+    kind: TwitterAccountVC,
+    issuer: TwitterAccountIssuer
+    options: TwitterAccountOptions
+  };
+  "discord-account": {
+    kind: DiscordAccountVC,
+    issuer: DiscordAccountIssuer,
+    options: DiscordAccountOptions
+  };
+  "ethereum-account": {
+    kind: EthAccountVC,
+    issuer: EthAccountIssuer,
+    options: EthAccountOptions
+  };
+  "github-account": {
+    kind: GitHubAccountVC,
+    issuer: GithubAccountIssuer,
+    options: GitHubAccountOptions
+  };
 };
 
-export type Clients = {
-  [K in keyof CredentialKinds]: IClient<CredentialKinds[K]>;
+export type Issuers = {
+  [K in keyof CredentialKinds]: CredentialKinds[K]["issuer"];
 };
 
-const DEFAULT_ENDPOINT = new URL("https://app.sybil.center");
 
 export class Sybil {
-  readonly clients: Clients;
+  readonly issuers: Issuers;
+  private readonly httpClient: HttpClient;
 
-  constructor(frontEndpoint: URL = DEFAULT_ENDPOINT) {
-    const httpClient = new HttpClient(frontEndpoint);
-    this.clients = {
-      "twitter-account": new TwitterClient(httpClient),
-      "discord-account": new DiscordClient(httpClient),
-      "ethereum-account": new EthClient(httpClient),
-      "github-account": new GithubClient(httpClient),
+  constructor(
+    readonly apiKeys: Optionals<APIKeys, "secretKey">,
+    readonly issuerDomain?: URL
+  ) {
+    this.httpClient = new HttpClient(this.apiKeys, issuerDomain);
+    this.issuers = {
+      "twitter-account": new TwitterAccountIssuer(this.httpClient),
+      "discord-account": new DiscordAccountIssuer(this.httpClient),
+      "ethereum-account": new EthAccountIssuer(this.httpClient),
+      "github-account": new GithubAccountIssuer(this.httpClient)
     };
   }
 
-  async credential<TName extends keyof CredentialKinds>(name: TName, signFn: SignFn): Promise<CredentialKinds[TName]> {
-    const client = this.clients[name];
-    if (!client) throw new Error(`Provider ${name} not available`);
-    return client.issueCredential(signFn);
+  async credential<TName extends keyof CredentialKinds>(
+    name: TName,
+    subjectProof: SubjectProof,
+    options?: CredentialKinds[TName]["options"]
+  ): Promise<CredentialKinds[TName]["kind"]> {
+    const issuer = this.issuer(name);
+    // @ts-ignore
+    return issuer.issueCredential(subjectProof, options);
+  }
+
+  issuer<TName extends keyof Issuers>(
+    name: TName
+  ): Issuers[TName] {
+    const issuer = this.issuers[name];
+    if (!issuer) throw new Error(`Issuer ${name} not available`);
+    return issuer;
+  }
+
+  /** Execute request to verify Credential */
+  async verify<TCredential = Credential>(
+    credential: TCredential
+  ): Promise<VerifyResult> {
+    return this.httpClient.verify<TCredential>(credential);
   }
 }

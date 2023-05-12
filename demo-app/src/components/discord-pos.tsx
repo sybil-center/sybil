@@ -1,23 +1,27 @@
 import { FormEvent, useState } from "react";
+import { DiscordAccountVC, SolanaProofProvider, SolanaProvider, Sybil } from "@sybil-center/sdk";
 import styles from "@/styles/twitter-pos.module.css";
-import { TwitterAccountVC, EthProofProvider, type IEIP1193Provider, Sybil } from "@sybil-center/sdk";
 
 export const sybil = new Sybil(
-  { apiKey: "get API keys from Dev Portal - https://app.sybil.center/devportal" });
+  { apiKey: "get API keys from Dev Portal - https://app.sybil.center/devportal" },
+);
 
-export function TwitterPos() {
+export function DiscordPos() {
   const [state, setState] = useState<{
     loading: boolean;
-    vc: TwitterAccountVC | null;
+    vc: DiscordAccountVC | null;
   }>({
     loading: false,
-    vc: null,
+    vc: null
   });
 
-  const proofProvider = () => {
-    const injected = "ethereum" in window && (window.ethereum as IEIP1193Provider);
-    if (!injected) throw new Error(`Only injected provider is supported`);
-    return new EthProofProvider(injected);
+  const proofProvider = (): SolanaProofProvider => {
+    const injected = "phantom" in window && (window.phantom as any);
+    if (injected) {
+      return new SolanaProofProvider(injected.solana as SolanaProvider);
+    }
+    window.open("https://phantom.app/", "_blank");
+    throw new Error(`Only injected provider is supported`);
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -25,7 +29,9 @@ export function TwitterPos() {
     if (state.loading) return;
     setState({ loading: true, vc: null });
     sybil
-      .credential("twitter-account", await proofProvider().proof())
+      .credential("discord-account", await proofProvider().proof(), {
+        custom: { helloFrom: "@sybil-center/sdk" },
+      })
       .then((credential) => {
         console.log("Credential:", credential);
         setState({ loading: false, vc: credential });
@@ -41,9 +47,9 @@ export function TwitterPos() {
       return (
         <>
           <label>
-            Twitter:{" "}
+            Discord:{" "}
             <span>
-              <b> {state.vc.credentialSubject.twitter.username} ✓</b>
+              <b> {state.vc.credentialSubject.discord.username} ✓</b>
             </span>
           </label>
           <textarea readOnly={true} value={JSON.stringify(state.vc, null, 4)}></textarea>
@@ -52,7 +58,7 @@ export function TwitterPos() {
     } else {
       return (
         <label>
-          Twitter: <button type={"submit"}>Add</button>
+          Discord: <button type={"submit"}>Add</button>
         </label>
       );
     }
